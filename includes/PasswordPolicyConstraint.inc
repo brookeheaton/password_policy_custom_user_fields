@@ -42,14 +42,29 @@ class PasswordPolicyConstraint extends PasswordPolicyItem {
       if ($this->config != $this->info['config']) {
         $args = array();
         foreach ($this->config as $key => $value) {
-          $args['@' . $key] = $value;
+          if (is_array($value) & $key == 'user_fields' & !empty($value)) {
+            foreach ($value as $config_field) {
+              $instances = field_info_instances('user');
+              foreach ($instances['user'] as $name => $field) {
+                if ($field['field_name'] === $config_field) {
+                  $constraint_fields[] = $field['label'];
+                    $args['@' . $key] = (implode(', ', $constraint_fields));
+                }
+              }
+            }
+          }
         }
         $messages[$id] = format_string($message, $args);
       }
     }
-    return $messages;
-  }
-
+    if ($messages[$id] == 'Password must not contain user @user_fields') {
+      $messages = array();
+    }
+      else {
+        $messages[$id] = format_string($message, $args);
+      }
+      return $messages;
+    }
   /**
    * Gets messages indicating password failed to meet constraint.
    *

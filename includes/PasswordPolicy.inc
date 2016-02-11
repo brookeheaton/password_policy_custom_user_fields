@@ -116,6 +116,7 @@ class PasswordPolicy {
    *   Failure messages for failed constraints.
    */
   public function check($password, $account) {
+
     $errors = array();
     foreach ($this->activeConstraints() as $constraint) {
       if (!$constraint->check($password, $account)) {

@@ -8,7 +8,7 @@ $plugin = array(
   'prime value' => 'user_fields',
   'multi' => 'loop',
   'config' => array(
-      'user_fields' => '',
+    'user_fields' => NULL,
   ),
 );
 
@@ -53,17 +53,19 @@ function password_policy_user_fields_constraint($password, $account, $constraint
         return TRUE;
     }
     $result = TRUE;
-    foreach ($constraint_fields as $value) {
-        $field_value = $user_fields->{$value}['und']['0']['value'];
-        if (!empty($field_value)) {
-            $field_values[] = drupal_strtolower($field_value);
-            foreach ($field_values as $field_value) {
-                $password_lower = drupal_strtolower($password);
-                if (strpos($password_lower, $field_value) !== FALSE) {
-                    $result = FALSE;
-                }
-            }
-        }
-    }
+     foreach ($constraint_fields as $value) {
+       if ($value !== 0) {
+         $field_value = $user_fields->{$value}['und']['0']['value'];
+         if (!empty($field_value)) {
+           $field_values[] = drupal_strtolower($field_value);
+           foreach ($field_values as $field_value) {
+             $password_lower = drupal_strtolower($password);
+             if (strpos($password_lower, $field_value) !== FALSE) {
+               $result = FALSE;
+             }
+           }
+         }
+       }
+     }
     return $result;
 }

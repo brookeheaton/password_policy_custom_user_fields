@@ -186,6 +186,18 @@ Drupal.behaviors.passwordPolicyConstraintSettingsSummary = {
         return Drupal.t('Not enforced');
       }
     });
+
+    $('fieldset#edit-user-fields-fieldset', context).drupalSetSummary(function (context) {
+      var vals = [];
+      $('input[type="checkbox"]:checked', context).each(function () {
+        vals.push(Drupal.t('Must not include ') + $.trim($(this).next('label').text()));
+        });
+      if (!vals.length) {
+        vals.push(Drupal.t('Not restricted'));
+      }
+        return vals.join('<br />');
+      });
+
   }
 };
 
